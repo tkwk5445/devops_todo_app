@@ -1,0 +1,11 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  backend:
+    build:
+      context: .  # 현재 디렉토리에서 Dockerfile을 사용하여 빌드
+    image: todo-backend:17
+    ports:
+      - "4000:4000"  # 컨테이너의 4000번 포트를 로컬의 4000번 포트로 매핑
+    env_file:
+      - .env  # .env 파일을 통해 환경 변수를 컨테이너에 주입
