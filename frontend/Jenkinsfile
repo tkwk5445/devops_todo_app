@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "tkwk5445/todo-frontend:1128-4" // 기본 이미지 태그
-        DOCKER_IMAGE_LATEST = "tkwk5445/todo-frontend:latest" // latest 태그 추가
+        DOCKER_IMAGE = "tkwk5445/todo-frontend:latest" // 기본적으로 latest 태그 사용
         FRONTEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git"
         FRONTEND_PATH = "frontend"
     }
@@ -16,18 +15,21 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 dir(FRONTEND_PATH) {
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    sh '''
+                    echo "Building Docker image: $DOCKER_IMAGE"
+                    docker build -t $DOCKER_IMAGE .
+                    '''
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                // Docker Hub 자격증명 사용
                 withCredentials([usernamePassword(credentialsId: 'docker-credential', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
-                    docker login -u $DOCKER_USER -p $DOCKER_PASS
-                    docker push $DOCKER_IMAGE
-                    docker push $DOCKER_IMAGE_LATEST
+                    echo "Logging into Docker Hub with user: $DOCKER_USER"
+                    docker login -u $DOCKER_USER -p $DOCKER_PASS || exit 1
+                    echo "Pushing image: $DOCKER_IMAGE"
+                    docker push $DOCKER_IMAGE || exit 1
                     '''
                 }
             }
