@@ -14,14 +14,19 @@ pipeline {
                 git branch: 'main', url: "${BACKEND_REPO}"
             }
         }
-        stage('Copy .env File to Jenkins Container') {
+        stage('Generate .env File') {
             steps {
-                echo "Copying .env file to Jenkins container"
+                echo "Generating .env file in backend directory"
                 sh '''
-                docker cp ${ENV_FILE_HOST_PATH} $(hostname):${ENV_FILE_CONTAINER_PATH}
+                echo "DB_HOST=${DB_HOST}" >> ${WORKSPACE}/backend/.env
+                echo "DB_USER=${DB_USER}" >> ${WORKSPACE}/backend/.env
+                echo "DB_PASSWORD=${DB_PASSWORD}" >> ${WORKSPACE}/backend/.env
+                echo "DB_NAME=${DB_NAME}" >> ${WORKSPACE}/backend/.env
+                echo "JWT_SECRET=${JWT_SECRET}" >> ${WORKSPACE}/backend/.env
                 '''
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
