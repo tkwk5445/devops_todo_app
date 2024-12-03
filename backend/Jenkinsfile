@@ -2,14 +2,24 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "tkwk5445/todo-backend:latest" // Docker 이미지 이름
-        BACKEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 프론트엔드 레포지토리 URL
-        BACKEND_PATH = "backend" // 프론트엔드 코드 경로
+        BACKEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 백엔드 레포지토리 URL
+        BACKEND_PATH = "backend" // 백엔드 코드 경로
+        ENV_FILE_HOST_PATH = "/root/.env" // 호스트에 있는 .env 파일 경로
+        ENV_FILE_CONTAINER_PATH = "/var/jenkins_home/workspace/${JOB_NAME}/${BACKEND_PATH}/.env" // 컨테이너 내 .env 파일 위치
     }
     stages {
         stage('Clone Repository') {
             steps {
                 echo "Cloning repository: ${BACKEND_REPO}"
-                git branch: 'main', url: "${BACKEND_REPO}" // Git 레포지토리 클론
+                git branch: 'main', url: "${BACKEND_REPO}"
+            }
+        }
+        stage('Copy .env File to Jenkins Container') {
+            steps {
+                echo "Copying .env file to Jenkins container"
+                sh '''
+                docker cp ${ENV_FILE_HOST_PATH} $(hostname):${ENV_FILE_CONTAINER_PATH}
+                '''
             }
         }
         stage('Build Docker Image') {
@@ -23,7 +33,6 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image: ${DOCKER_IMAGE}"
-                // Docker Hub 자격 증명 사용
                 withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                     docker login -u $DOCKER_USER -p $DOCKER_PASS
