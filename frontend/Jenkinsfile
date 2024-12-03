@@ -16,11 +16,11 @@ pipeline {
             steps {
                 echo "Generating .env file in backend directory"
                 sh '''
-                echo "DB_HOST=${DB_HOST}" >> ${WORKSPACE}/backend/.env
-                echo "DB_USER=${DB_USER}" >> ${WORKSPACE}/backend/.env
-                echo "DB_PASSWORD=${DB_PASSWORD}" >> ${WORKSPACE}/backend/.env
-                echo "DB_NAME=${DB_NAME}" >> ${WORKSPACE}/backend/.env
-                echo "JWT_SECRET=${JWT_SECRET}" >> ${WORKSPACE}/backend/.env
+                echo "DB_HOST=${DB_HOST}" >> ${WORKSPACE}/frontend/.env
+                echo "DB_USER=${DB_USER}" >> ${WORKSPACE}/frontend/.env
+                echo "DB_PASSWORD=${DB_PASSWORD}" >> ${WORKSPACE}/frontend/.env
+                echo "DB_NAME=${DB_NAME}" >> ${WORKSPACE}/frontend/.env
+                echo "JWT_SECRET=${JWT_SECRET}" >> ${WORKSPACE}/frontend/.env
                 '''
             }
         }
