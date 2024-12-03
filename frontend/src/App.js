@@ -48,8 +48,8 @@ function App() {
         return <div>로딩 중...</div>;
     }
 
-    const API_URL = process.env.REACT_APP_API_URL || 'http://todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com'; // 기본값 설정
-
+   // const API_URL = process.env.REACT_APP_API_URL || 'http://todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com'; // 기본값 설정
+    const API_URL = process.env.REACT_APP_API_URL
 
     return (
         <Router>

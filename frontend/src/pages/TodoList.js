@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TodoList = ({ onLogout }) => {
     // 하드코딩된 API URL
-    const API_URL = 'http://todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com'; // 필요에 따라 이 값을 변경하세요
+  // const API_URL = 'http://todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com'; // 필요에 따라 이 값을 변경하세요
 
     const [todos, setTodos] = useState([]);
     const [newTask, setNewTask] = useState('');
