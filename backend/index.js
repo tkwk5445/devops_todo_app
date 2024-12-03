@@ -1,5 +1,3 @@
-// index.js
-
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -18,6 +16,11 @@ const pool = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+});
+
+// 헬스체크 엔드포인트
+app.get('/api/health', (req, res) => {
+    res.status(200).send({ status: 'OK', message: 'The server is healthy!' });
 });
 
 // 미들웨어: JWT 인증
