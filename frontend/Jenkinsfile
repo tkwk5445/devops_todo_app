@@ -4,12 +4,26 @@ pipeline {
         DOCKER_IMAGE = "tkwk5445/todo-frontend:latest" // Docker 이미지 이름
         FRONTEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 프론트엔드 레포지토리 URL
         FRONTEND_PATH = "frontend" // 프론트엔드 코드 경로
+        ENV_FILE_PATH = "/root/.env" // .env 파일 위치
     }
     stages {
         stage('Clone Repository') {
             steps {
                 echo "Cloning repository: ${FRONTEND_REPO}"
                 git branch: 'main', url: "${FRONTEND_REPO}" // Git 레포지토리 클론
+            }
+        }
+        stage('Copy .env File') {
+            steps {
+                echo "Copying .env file to frontend directory"
+                sh '''
+                if [ -f ${ENV_FILE_PATH} ]; then
+                    cp ${ENV_FILE_PATH} ${FRONTEND_PATH}/.env
+                else
+                    echo ".env file not found at ${ENV_FILE_PATH}"
+                    exit 1
+                fi
+                '''
             }
         }
         stage('Build Docker Image') {
