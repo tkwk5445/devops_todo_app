@@ -28,7 +28,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
-                dir(BACKEND_PATH) {
+                dir(FRONTEND_PATH) {
                     sh 'docker build -t $DOCKER_IMAGE .' // Docker 이미지 빌드
                 }
             }
