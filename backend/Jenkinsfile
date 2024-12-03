@@ -25,6 +25,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image with tag: build-${BUILD_NUMBER}"
@@ -53,12 +54,20 @@ pipeline {
                 echo "Updating ArgoCD manifest repository"
                 withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PERSONAL_TOKEN')]) {
                     sh '''
+                    # Clean up existing manifest directory if it exists
+                    if [ -d manifest ]; then
+                        rm -rf manifest
+                    fi
+                    
+                    # Clone the manifest repository
                     git clone ${MANIFEST_REPO} manifest
                     git config --global user.email "tkwk5445@naver.com"
                     git config --global user.name "$GITHUB_USER"
                     cd manifest
+                    
+                    # Update the backend deployment manifest
                     sed -i "s|image: .*|image: ${DOCKER_IMAGE}:build-${BUILD_NUMBER}|" backend/backend-deployment.yaml
-                    git add .
+                    git add backend/backend-deployment.yaml
                     git commit -m "Updated backend image to build-${BUILD_NUMBER}"
                     git push https://${GITHUB_PERSONAL_TOKEN}@github.com/tkwk5445/devops_todo_manifest.git main
                     '''
