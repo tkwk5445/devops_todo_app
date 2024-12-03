@@ -10,7 +10,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 echo "Cloning repository: ${BACKEND_REPO}"
-                git branch: 'main', url: "${BACKEND_REPO}" // 레포지토리 클론
+                git branch: 'main', url: "${BACKEND_REPO}"
             }
         }
         stage('Generate .env File') {
@@ -48,22 +48,14 @@ pipeline {
                 }
             }
         }
-        stage('Cleanup Docker Images') {
-            steps {
-                echo "Cleaning up unused Docker images"
-                sh '''
-                docker image prune -f
-                '''
-            }
-        }
         stage('Update Manifest Repository') {
             steps {
                 echo "Updating ArgoCD manifest repository"
-                withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PERSONAL_TOKEN')]) {
+                withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PERSONAL_TOKEN')]) {
                     sh '''
                     git clone ${MANIFEST_REPO} manifest
                     git config --global user.email "tkwk5445@naver.com"
-                    git config --global user.name "tkwk5445"
+                    git config --global user.name "$GITHUB_USER"
                     cd manifest
                     sed -i "s|image: .*|image: ${DOCKER_IMAGE}:build-${BUILD_NUMBER}|" backend/backend-deployment.yaml
                     git add .
@@ -71,6 +63,14 @@ pipeline {
                     git push https://${GITHUB_PERSONAL_TOKEN}@github.com/tkwk5445/devops_todo_manifest.git main
                     '''
                 }
+            }
+        }
+        stage('Clean Up Docker Images') {
+            steps {
+                echo "Cleaning up unused Docker images"
+                sh '''
+                docker image prune -f
+                '''
             }
         }
     }
