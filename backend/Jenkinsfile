@@ -25,7 +25,6 @@ pipeline {
                 '''
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image with tag: build-${BUILD_NUMBER}"
@@ -47,6 +46,14 @@ pipeline {
                     docker push ${DOCKER_IMAGE}:latest
                     '''
                 }
+            }
+        }
+        stage('Cleanup Docker Images') {
+            steps {
+                echo "Cleaning up unused Docker images"
+                sh '''
+                docker image prune -f
+                '''
             }
         }
         stage('Update Manifest Repository') {
