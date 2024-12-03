@@ -7,7 +7,7 @@ const AuthPage = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
 
     // 환경 변수로 API URL 설정
-    const API_URL = process.env.REACT_APP_API_URL || 'todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com';  // 기본 URL 설정
+    const API_URL = process.env.REACT_APP_API_URL || 'http://todo-app-todo-backend-58f00-100724284-01a5be37c903.kr.lb.naverncp.com';  // 기본 URL 설정
 
     return (
         <div className="container">
