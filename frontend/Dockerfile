@@ -17,7 +17,10 @@ RUN npm run build
 # 6단계: Nginx 사용하여 빌드된 애플리케이션 서빙
 FROM nginx:stable-alpine
 
-# 빌드된 파일을 Nginx의 웹 서버 디렉토리에 복사
+# 커스터마이징된 Nginx 설정 복사
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# 빌드된 React 정적 파일을 Nginx 웹 서버 디렉토리에 복사
 COPY --from=build /app/build /usr/share/nginx/html
 
 # 7단계: 포트 80을 열어서 외부에서 접근할 수 있도록 설정
