@@ -4,32 +4,31 @@ pipeline {
         DOCKER_IMAGE = "tkwk5445/todo-frontend:latest" // Docker 이미지 이름
         FRONTEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 프론트엔드 레포지토리 URL
         FRONTEND_PATH = "frontend" // 프론트엔드 코드 경로
-        ENV_FILE_PATH = "/root/.env" // .env 파일 위치
     }
     stages {
         stage('Clone Repository') {
             steps {
-                echo "Cloning repository: ${FRONTEND_REPO}"
-                git branch: 'main', url: "${FRONTEND_REPO}" // Git 레포지토리 클론
+                echo "Cloning repository: ${BACKEND_REPO}"
+                git branch: 'main', url: "${BACKEND_REPO}"
             }
         }
-        stage('Copy .env File') {
+        stage('Generate .env File') {
             steps {
-                echo "Copying .env file to frontend directory"
+                echo "Generating .env file in backend directory"
                 sh '''
-                if [ -f ${ENV_FILE_PATH} ]; then
-                    cp ${ENV_FILE_PATH} ${FRONTEND_PATH}/.env
-                else
-                    echo ".env file not found at ${ENV_FILE_PATH}"
-                    exit 1
-                fi
+                echo "DB_HOST=${DB_HOST}" >> ${WORKSPACE}/backend/.env
+                echo "DB_USER=${DB_USER}" >> ${WORKSPACE}/backend/.env
+                echo "DB_PASSWORD=${DB_PASSWORD}" >> ${WORKSPACE}/backend/.env
+                echo "DB_NAME=${DB_NAME}" >> ${WORKSPACE}/backend/.env
+                echo "JWT_SECRET=${JWT_SECRET}" >> ${WORKSPACE}/backend/.env
                 '''
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
-                dir(FRONTEND_PATH) {
+                dir(BACKEND_PATH) {
                     sh 'docker build -t $DOCKER_IMAGE .' // Docker 이미지 빌드
                 }
             }
@@ -37,7 +36,6 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo "Pushing Docker image: ${DOCKER_IMAGE}"
-                // Docker Hub 자격 증명 사용
                 withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                     docker login -u $DOCKER_USER -p $DOCKER_PASS

@@ -4,8 +4,6 @@ pipeline {
         DOCKER_IMAGE = "tkwk5445/todo-backend:latest" // Docker 이미지 이름
         BACKEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 백엔드 레포지토리 URL
         BACKEND_PATH = "backend" // 백엔드 코드 경로
-        ENV_FILE_HOST_PATH = "/root/.env" // 호스트에 있는 .env 파일 경로
-        ENV_FILE_CONTAINER_PATH = "/var/jenkins_home/workspace/${JOB_NAME}/${BACKEND_PATH}/.env" // 컨테이너 내 .env 파일 위치
     }
     stages {
         stage('Clone Repository') {
