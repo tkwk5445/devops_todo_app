@@ -1,52 +1,62 @@
 /* 전체 페이지 스타일 */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background: linear-gradient(to right, #ece9e6, #ffffff);
     color: #333;
 }
 
 /* 메인 컨테이너 스타일 */
 .container {
-    max-width: 500px;
+    max-width: 600px;
     margin: 50px auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* 제목 스타일 */
 h1, h2 {
-    color: #555;
+    color: #333333;
     text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
 }
 
-/* 버튼 스타일 */
+/* 버튼 기본 스타일 */
 button {
-    background-color: #4CAF50;
+    background-color: #3a86ff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 20px;
     margin: 10px 0;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #265dbe;
 }
 
 /* 입력 필드 스타일 */
 input {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0;
+    padding: 12px;
+    margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3a86ff;
 }
 
 /* 네비게이션 버튼 */
@@ -58,6 +68,15 @@ input {
 
 .nav-buttons button {
     margin: 0 10px;
+    padding: 10px 20px;
+}
+
+.nav-buttons button.active {
+    background-color: #28a745;
+}
+
+.nav-buttons button.inactive {
+    background-color: #ccc;
 }
 
 /* 리스트 스타일 */
@@ -67,17 +86,27 @@ ul {
 }
 
 li {
-    background: #f9f9f9;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
+    background: #f6f8fa;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+li span {
+    font-size: 16px;
+    color: #333;
 }
 
 li button {
     background-color: #ff4d4d;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
 li button:hover {
@@ -85,26 +114,21 @@ li button:hover {
 }
 
 /* 로그아웃 버튼 스타일 */
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    margin: 10px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
 button.logout {
-    background-color: #f44336;
+    background-color: #ff6b6b;
     float: right;
+    padding: 10px 20px;
 }
 
 button.logout:hover {
-    background-color: #e53935;
+    background-color: #d64040;
+}
+
+/* 추가적인 박스 쉐도우 효과 */
+input, button, .container {
+    transition: box-shadow 0.3s ease;
+}
+
+input:focus, button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
