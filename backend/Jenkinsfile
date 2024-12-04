@@ -74,19 +74,33 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Clean Up Old Docker Images') {
             steps {
+                echo "Cleaning up old Docker images"
                 sh '''
+                # 현재 빌드 태그
                 CURRENT_BUILD="build-${BUILD_NUMBER}"
-                IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep '${DOCKER_IMAGE}:build-' | sort -t '-' -k 2 -n)
-                IMAGES_TO_DELETE=$(echo "$IMAGES" | head -n -2)
-                if [ ! -z "$IMAGES_TO_DELETE" ]; then
-                    echo "Removing the following images:"
-                    echo "$IMAGES_TO_DELETE"
-                    echo "$IMAGES_TO_DELETE" | xargs -r docker rmi -f
+                
+                # 관련 이미지 목록 생성
+                IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep "${DOCKER_IMAGE}:build-" | sort -t '-' -k 2 -n)
+                
+                if [ ! -z "$IMAGES" ]; then
+                    echo "Found images:"
+                    echo "$IMAGES"
+                    
+                    # 최신 두 개 이미지를 제외한 나머지 삭제
+                    IMAGES_TO_DELETE=$(echo "$IMAGES" | head -n -2)
+                    
+                    if [ ! -z "$IMAGES_TO_DELETE" ]; then
+                        echo "Removing the following images:"
+                        echo "$IMAGES_TO_DELETE"
+                        echo "$IMAGES_TO_DELETE" | xargs -r docker rmi -f
+                    else
+                        echo "No old images to clean up"
+                    fi
                 else
-                    echo "No old images to clean up"
+                    echo "No images found matching ${DOCKER_IMAGE}:build-*"
                 fi
                 '''
             }
