@@ -46,31 +46,34 @@ pipeline {
             }
         }
 
-        stage('Update Manifest Repository') {
-            steps {
-                echo "Updating ArgoCD manifest repository"
-                withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PERSONAL_TOKEN')]) {
-                    sh '''
-                    # Clean up existing manifest directory if it exists
-                    if [ -d manifest ]; then
-                        rm -rf manifest
-                    fi
-                    
-                    # Clone the manifest repository
-                    git clone ${MANIFEST_REPO} manifest
-                    git config --global user.email "tkwk5445@naver.com"
-                    git config --global user.name "$GITHUB_USER"
-                    cd manifest
-                    
-                    # Update the frontend deployment manifest
-                    sed -i "s|image: .*|image: ${DOCKER_IMAGE}:build-${BUILD_NUMBER}|" frontend/frontend-deployment.yaml
-                    git add frontend/frontend-deployment.yaml
-                    git commit -m "Updated frontend image to build-${BUILD_NUMBER}"
-                    git push https://${GITHUB_PERSONAL_TOKEN}@github.com/tkwk5445/devops_todo_manifest.git main
-                    '''
-                }
+    stage('Update Manifest Repository') {
+        steps {
+            echo "Updating ArgoCD manifest repository"
+            withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PERSONAL_TOKEN')]) {
+                sh '''
+                # Clean up existing manifest directory if it exists
+                if [ -d manifest ]; then
+                    rm -rf manifest
+                fi
+                
+                # Clone the manifest repository
+                git clone ${MANIFEST_REPO} manifest
+                git config --global user.email "tkwk5445@naver.com"
+                git config --global user.name "$GITHUB_USER"
+                cd manifest
+                
+                # Update the frontend manifest file
+                sed -i "s|image: .*|image: ${DOCKER_IMAGE}:build-${BUILD_NUMBER}|" frontend/frontend-manifest.yaml
+                
+                # Commit and push changes
+                git add frontend/frontend-manifest.yaml
+                git commit -m "Updated frontend image to build-${BUILD_NUMBER}"
+                git push https://${GITHUB_PERSONAL_TOKEN}@github.com/tkwk5445/devops_todo_manifest.git main
+                '''
             }
         }
+    }
+
 
         stage('Clean Up Old Docker Images') {
             steps {
