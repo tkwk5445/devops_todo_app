@@ -29,7 +29,7 @@ h1, h2 {
 button {
     background-color: #3a86ff;
     color: white;
-    border: noneㄹ
+    border: none;
     padding: 12px 20px;
     margin: 10px 0;
     border-radius: 8px;
@@ -42,7 +42,7 @@ button:hover {
     background-color: #265dbe;
 }
 
-/* 입력 필드 스타일ㄹ */
+/* 입력 필드 스타일 */
 input {
     width: 100%;
     padding: 12px;
