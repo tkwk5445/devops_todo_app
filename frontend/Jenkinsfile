@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "tkwk5445/todo-frontend:latest" // Docker 이미지 이름
+        DOCKER_IMAGE = "tkwk5445/todo-frontend" // Docker 이미지 이름
         FRONTEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 프론트엔드 레포지토리 URL
         FRONTEND_PATH = "frontend" // 프론트엔드 코드 경로
         MANIFEST_REPO = "https://github.com/tkwk5445/devops_todo_manifest.git" // Manifest 저장소
