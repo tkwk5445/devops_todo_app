@@ -5,7 +5,8 @@ pipeline {
         BACKEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 백엔드 레포지토리 URL
         BACKEND_PATH = "backend" // 백엔드 코드 경로
         MANIFEST_REPO = "https://github.com/tkwk5445/devops_todo_manifest.git" // Manifest 저장소
-        ECR_REPO = "public.ecr.aws/c1p3q5l9/todo-be"
+        PUBLIC_ECR_REPO = "public.ecr.aws/<account_alias>/todo-backend" // 퍼블릭 ECR URL
+        AWS_REGION = "ap-northeast-2" // 클러스터가 있는 리전
     }
     stages {
         stage('Clone Repository') {
@@ -32,8 +33,8 @@ pipeline {
                 echo "Building Docker image with tag: build-${BUILD_NUMBER}"
                 dir(BACKEND_PATH) {
                     sh '''
-                    docker build -t ${ECR_REPO}:build-${BUILD_NUMBER} .
-                    docker tag ${ECR_REPO}:build-${BUILD_NUMBER} ${ECR_REPO}:latest
+                    docker build -t ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER} .
+                    docker tag ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER} ${PUBLIC_ECR_REPO}:latest
                     '''
                 }
             }
@@ -47,8 +48,8 @@ pipeline {
                     aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
                     
                     # Docker 이미지 푸시
-                    docker push ${ECR_REPO}:build-${BUILD_NUMBER}
-                    docker push ${ECR_REPO}:latest
+                    docker push ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER}
+                    docker push ${PUBLIC_ECR_REPO}:latest
                     '''
                 }
             }
@@ -71,7 +72,7 @@ pipeline {
                     cd manifest
                     
                     # Update the backend manifest file
-                    sed -i "s|image: .*|image: ${ECR_REPO}:build-${BUILD_NUMBER}|" backend/backend-manifest.yaml
+                    sed -i "s|image: .*|image: ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER}|" backend/backend-manifest.yaml
                     
                     # Commit and push changes
                     git add backend/backend-manifest.yaml
@@ -90,7 +91,7 @@ pipeline {
                 CURRENT_BUILD="build-${BUILD_NUMBER}"
                 
                 # 관련 이미지 목록 생성
-                IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep "${ECR_REPO}:build-" | sort -t '-' -k 2 -n)
+                IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | grep "${PUBLIC_ECR_REPO}:build-" | sort -t '-' -k 2 -n)
                 
                 if [ ! -z "$IMAGES" ]; then
                     echo "Found images:"
@@ -107,7 +108,7 @@ pipeline {
                         echo "No old images to clean up"
                     fi
                 else
-                    echo "No images found matching ${ECR_REPO}:build-*"
+                    echo "No images found matching ${PUBLIC_ECR_REPO}:build-*"
                 fi
                 '''
             }
