@@ -34,7 +34,6 @@ pipeline {
                 dir(BACKEND_PATH) {
                     sh '''
                     docker build -t ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER} .
-                    docker tag ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER} ${PUBLIC_ECR_REPO}:latest
                     '''
                 }
             }
@@ -49,7 +48,6 @@ pipeline {
                     
                     # Docker 이미지 푸시
                     docker push ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER}
-                    docker push ${PUBLIC_ECR_REPO}:latest
                     '''
                 }
             }
