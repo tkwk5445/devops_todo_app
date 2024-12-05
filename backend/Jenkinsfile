@@ -5,7 +5,7 @@ pipeline {
         BACKEND_REPO = "https://github.com/tkwk5445/devops_todo_app.git" // 백엔드 레포지토리 URL
         BACKEND_PATH = "backend" // 백엔드 코드 경로
         MANIFEST_REPO = "https://github.com/tkwk5445/devops_todo_manifest.git" // Manifest 저장소
-        PUBLIC_ECR_REPO = "public.ecr.aws/<account_alias>/todo-backend" // 퍼블릭 ECR URL
+        PUBLIC_ECR_REPO = "public.ecr.aws/c1p3q5l9/todo-be" // ECR Endpoint
         AWS_REGION = "ap-northeast-2" // 클러스터가 있는 리전
     }
     stages {
