@@ -26,7 +26,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Building Docker image with tag: build-${BUILD_NUMBER}"
-                dir(BACKEND_PATH) {
+                dir(FRONTEND_PATH) {
                     sh '''
                     docker build -t ${PUBLIC_ECR_REPO}:build-${BUILD_NUMBER} .
                     '''
